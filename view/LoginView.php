@@ -40,6 +40,10 @@ class LoginView {
 		self::$sessionSaveLocation .= \Settings::APP_SESSION_NAME;
 		$this->model = $model;
 	}
+        
+        public function getClass(){
+            return "LoginView";
+        }
 	/**
 	 * accessor method for login attempts
 	 * both by cookie and by form
