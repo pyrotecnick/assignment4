@@ -114,12 +114,13 @@ class RegisterView {
     private function doRegisterForm() {
         $message = "";
         //Correct messages
-        if ($this->userWantsToRegister() && $this->getRequestUserName() == "") {
-            $message = "Username is missing";
-        } else if ($this->userWantsToRegister() && $this->getPassword() == "") {
-            $message = "Password is missing";
-        } else if ($this->registerHasFailed === true) {
-            $message = "Wrong name or password";
+        if ($this->userWantsToRegister() && $this->getRequestUserName() == "" && $this->getPassword() == ""){
+            $message = "Username has too few characters, at least 3 characters. Password has too few characters, at least 6 characters.";
+        } else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
+            $message = "Username has too few characters, at least 3 characters.";
+        }else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
+            $message = "\n";
+            $message = "Password has too few characters, at least 6 characters.";
         } else {
             $message = $this->getSessionMessage();
         }
