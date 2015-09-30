@@ -15,7 +15,7 @@ class RegisterView {
     private static $register = "RegisterView::Register";
     private static $name = "RegisterView::UserName";
     private static $password = "RegisterView::Password";
-    private static $password2 = "RegisterView::Password";
+    private static $password2 = "RegisterView::Password2";
     private static $cookieName = "RegisterView::CookieName";
     private static $CookiePassword = "RegisterView::CookiePassword";
     private static $messageId = "RegisterView::Message";
@@ -57,8 +57,7 @@ class RegisterView {
      * @return boolean true if user did try to register
      */
     public function userWantsToRegister() {
-        return isset($_POST[self::$register]) ||
-                isset($_COOKIE[self::$cookieName]);
+        return isset($_POST[self::$register]);
     }
 
     /**
@@ -116,16 +115,15 @@ class RegisterView {
         //Correct messages
         if ($this->userWantsToRegister() && $this->getRequestUserName() == "" && $this->getPassword() == ""){
             $message = "Username has too few characters, at least 3 characters. Password has too few characters, at least 6 characters.";
-        } else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
+        }else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
             $message = "Username has too few characters, at least 3 characters.";
         }else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
-            $message = "\n";
             $message = "Password has too few characters, at least 6 characters.";
+        }else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPassword2()) !== 0) {
+            $message = "Passwords do not match.";
         } else {
             $message = $this->getSessionMessage();
         }
-        //cookies
-        $this->unsetCookies();
 
         //generate HTML
         return $this->generateRegisterFormHTML($message);
@@ -176,7 +174,7 @@ class RegisterView {
 					<label for='" . self::$password . "'>Password :</label>
 					<input type='password' id='" . self::$password . "' name='" . self::$password . "'/>
                                         <br/>
-					<label for='" . self::$password . "'>Repeat Password :</label>
+					<label for='" . self::$password2 . "'>Repeat Password :</label>
 					<input type='password' id='" . self::$password2 . "' name='" . self::$password2 . "'/>
 					<br/>
 					<input type='submit' name='" . self::$register . "' value='Register'/>
@@ -202,6 +200,12 @@ class RegisterView {
     private function getPassword() {
         if (isset($_POST[self::$password]))
             return trim($_POST[self::$password]);
+        return "";
+    }
+    
+    private function getPassword2() {
+        if (isset($_POST[self::$password2]))
+            return trim($_POST[self::$password2]);
         return "";
     }
 
