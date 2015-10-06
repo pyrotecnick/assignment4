@@ -17,6 +17,7 @@ class RegisterView {
     private static $password = "RegisterView::Password";
     private static $password2 = "RegisterView::Password2";
     private static $messageId = "RegisterView::Message";
+    public $modelMessage;
 
     /**
      * This name is used in session
@@ -63,7 +64,7 @@ class RegisterView {
      * @return \model\UserCredentials
      */
     public function getCredentials() {
-        return new \model\UserCredentials($this->getUserName(), $this->getPassword(), $this->getTempPassword(), $this->getUserClient());
+        return new \model\UserCredentials($this->getUserName(), $this->getPassword(), $this->getPassword2(), $this->getUserClient());
     }
 
     public function getUserClient() {
@@ -95,7 +96,6 @@ class RegisterView {
      * @sideeffect Sets cookies!
      * @return String HTML
      * 
-     * TODO: fix
      */
     public function response() {
         return $this->doRegisterForm();
@@ -121,6 +121,9 @@ class RegisterView {
             $message = "Passwords do not match.";
         } else if ($this->userWantsToRegister() && $this->dirtyUsername($this->getRequestUserName())) {
             $message = "Username contains invalid characters.";
+        } else if ($this->modelMessage != "") {
+            $message = $this->modelMessage;
+            $this->modelMessage = "";
         } else {
             $message = $this->getSessionMessage();
         }

@@ -4,13 +4,13 @@
   */
 namespace model;
 require_once("UserCredentials.php");
-require_once("TempCredentials.php");
-require_once("TempCredentialsDAL.php");
 require_once("LoggedInUser.php");
 require_once("UserClient.php");
+require_once("/view/RegisterView.php");
 class RegisterModel {
 	//TODO: Remove static to enable several sessions
 	private static $sessionUserLocation = "RegisterModel::loggedInUser";
+        public $message;
 	/**
 	 * @var null | TempCredentials
 	 */
@@ -37,6 +37,9 @@ class RegisterModel {
 		
 		$this->tempCredentials = $this->tempDAL->load($uc->getName());
 		$registerByUsernameAndPassword = \Settings::USERNAME === $uc->getName() && \Settings::PASSWORD === $uc->getPassword();
+                if ($this->usernameExists($uc->getName())){
+                    return false;
+                }
 		if ( $registerByUsernameAndPassword) {
 			$user = new LoggedInUser($uc); 
 			$_SESSION[self::$sessionUserLocation] = $user;
@@ -44,5 +47,14 @@ class RegisterModel {
 		}
 		return false;
 	}
+        
+        private function usernameExists($username){
+            if(strpos(file_get_contents("users.txt"), $username) !== FALSE){
+                $this->message = "User exists, pick another username.";
+                return TRUE;
+            }else {
+                return FALSE;
+            }
+        }
 	
 }

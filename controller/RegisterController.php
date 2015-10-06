@@ -15,22 +15,14 @@ class RegisterController {
 	public function doControl() {
 		
 		$userClient = $this->view->getUserClient();
-		if ($this->model->isLoggedIn($userClient)) {
-			if ($this->view->userWantsToLogout()) {
-				$this->model->doLogout();
-				$this->view->setUserLogout();
-			}
-		} else {
-			
-			if ($this->view->userWantsToRegister()) {
+		if ($this->view->userWantsToRegister()) {
 				$uc = $this->view->getCredentials();
 				if ($this->model->doRegister($uc) == true) {
 					$this->view->setRegisterSucceeded();
 				} else {
 					$this->view->setRegisterFailed();
+                                        $this->view->modelMessage = $this->model->message;
 				}
 			}
-		}
-		$this->model->renew($userClient);
 	}
 }

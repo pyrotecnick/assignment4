@@ -23,7 +23,7 @@ $rm = new \model\RegisterModel();
 $rv = new \view\RegisterView($rm);
 $rc = new \controller\RegisterController($rm, $rv);
 //Controller must be run first since state is changed
-$c->doControl();
+$rc->doControl();
 //Generate output
 $dtv = new \view\DateTimeView();
 $lv = new \view\LayoutView();
