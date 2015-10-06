@@ -19,6 +19,7 @@ class RegisterController {
 				$uc = $this->view->getCredentials();
 				if ($this->model->doRegister($uc) == true) {
 					$this->view->setRegisterSucceeded();
+                                        $this->view->modelMessage = $this->model->message;
 				} else {
 					$this->view->setRegisterFailed();
                                         $this->view->modelMessage = $this->model->message;
