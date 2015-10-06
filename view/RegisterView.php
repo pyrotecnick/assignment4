@@ -16,8 +16,6 @@ class RegisterView {
     private static $name = "RegisterView::UserName";
     private static $password = "RegisterView::Password";
     private static $password2 = "RegisterView::Password2";
-    private static $cookieName = "RegisterView::CookieName";
-    private static $CookiePassword = "RegisterView::CookiePassword";
     private static $messageId = "RegisterView::Message";
 
     /**
@@ -45,8 +43,8 @@ class RegisterView {
         self::$sessionSaveLocation .= \Settings::APP_SESSION_NAME;
         $this->model = $model;
     }
-    
-    public function getClass(){
+
+    public function getClass() {
         return "RegisterView";
     }
 
@@ -113,20 +111,34 @@ class RegisterView {
     private function doRegisterForm() {
         $message = "";
         //Correct messages
-        if ($this->userWantsToRegister() && $this->getRequestUserName() == "" && $this->getPassword() == ""){
+        if ($this->userWantsToRegister() && $this->getRequestUserName() == "" && $this->getPassword() == "") {
             $message = "Username has too few characters, at least 3 characters. Password has too few characters, at least 6 characters.";
-        }else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
+        } else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
             $message = "Username has too few characters, at least 3 characters.";
-        }else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
+        } else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
             $message = "Password has too few characters, at least 6 characters.";
-        }else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPassword2()) !== 0) {
+        } else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPassword2()) !== 0) {
             $message = "Passwords do not match.";
+        } else if ($this->userWantsToRegister() && $this->dirtyUsername($this->getRequestUserName())) {
+            $message = "Username contains invalid characters.";
         } else {
             $message = $this->getSessionMessage();
         }
 
         //generate HTML
         return $this->generateRegisterFormHTML($message);
+    }
+
+    /**
+     * Checks for invalid characters in the requested username
+     * @param type $username
+     */
+    private function dirtyUsername($username) {
+        if (preg_match('/[^a-zA-Z0-9]+/', $username, $matches)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     private function redirect($message) {
@@ -142,25 +154,6 @@ class RegisterView {
             return $message;
         }
         return "";
-    }
-
-    /**
-     * unset cookies both locally and on the client
-     */
-    private function unsetCookies() {
-        setcookie(self::$cookieName, "", time() - 1);
-        setcookie(self::$CookiePassword, "", time() - 1);
-        unset($_COOKIE[self::$cookieName]);
-        unset($_COOKIE[self::$CookiePassword]);
-    }
-
-    private function setNewTemporaryPassword() {
-        //set New Cookie
-        $tempCred = $this->model->getTempCredentials();
-        if ($tempCred) {
-            setcookie(self::$cookieName, $this->getUserName(), $tempCred->getExpire());
-            setcookie(self::$CookiePassword, $tempCred->getPassword(), $tempCred->getExpire());
-        }
     }
 
     private function generateRegisterFormHTML($message) {
@@ -202,22 +195,11 @@ class RegisterView {
             return trim($_POST[self::$password]);
         return "";
     }
-    
+
     private function getPassword2() {
         if (isset($_POST[self::$password2]))
             return trim($_POST[self::$password2]);
         return "";
-    }
-
-    private function getTempPassword() {
-        if (isset($_COOKIE[self::$CookiePassword]))
-            return trim($_COOKIE[self::$CookiePassword]);
-        return "";
-    }
-
-    private function rememberMe() {
-        return isset($_POST[self::$keep]) ||
-                isset($_COOKIE[self::$CookiePassword]);
     }
 
 }

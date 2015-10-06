@@ -36,9 +36,8 @@ class RegisterModel {
 	public function doRegister(UserCredentials $uc) {
 		
 		$this->tempCredentials = $this->tempDAL->load($uc->getName());
-		$loginByUsernameAndPassword = \Settings::USERNAME === $uc->getName() && \Settings::PASSWORD === $uc->getPassword();
-		$loginByTemporaryCredentials = $this->tempCredentials != null && $this->tempCredentials->isValid($uc->getTempPassword());
-		if ( $loginByUsernameAndPassword || $loginByTemporaryCredentials) {
+		$registerByUsernameAndPassword = \Settings::USERNAME === $uc->getName() && \Settings::PASSWORD === $uc->getPassword();
+		if ( $registerByUsernameAndPassword) {
 			$user = new LoggedInUser($uc); 
 			$_SESSION[self::$sessionUserLocation] = $user;
 			return true;
