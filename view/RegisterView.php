@@ -15,7 +15,7 @@ class RegisterView {
     private static $register = "RegisterView::Register";
     private static $name = "RegisterView::UserName";
     private static $password = "RegisterView::Password";
-    private static $password2 = "RegisterView::Password2";
+    private static $PasswordRepeat = "RegisterView::PasswordRepeat";
     private static $messageId = "RegisterView::Message";
     public $modelMessage;
 
@@ -64,7 +64,7 @@ class RegisterView {
      * @return \model\UserCredentials
      */
     public function getCredentials() {
-        return new \model\UserCredentials($this->getUserName(), $this->getPassword(), $this->getPassword2(), $this->getUserClient());
+        return new \model\UserCredentials($this->getUserName(), $this->getPassword(), $this->getPasswordRepeat(), $this->getUserClient());
     }
 
     public function getUserClient() {
@@ -117,7 +117,7 @@ class RegisterView {
             $message = "Username has too few characters, at least 3 characters.";
         } else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
             $message = "Password has too few characters, at least 6 characters.";
-        } else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPassword2()) !== 0) {
+        } else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPasswordRepeat()) !== 0) {
             $message = "Passwords do not match.";
         } else if ($this->userWantsToRegister() && $this->dirtyUsername($this->getRequestUserName())) {
             $message = "Username contains invalid characters.";
@@ -170,8 +170,8 @@ class RegisterView {
 					<label for='" . self::$password . "'>Password :</label>
 					<input type='password' id='" . self::$password . "' name='" . self::$password . "'/>
                                         <br/>
-					<label for='" . self::$password2 . "'>Repeat Password :</label>
-					<input type='password' id='" . self::$password2 . "' name='" . self::$password2 . "'/>
+					<label for='" . self::$PasswordRepeat . "'>Repeat Password :</label>
+					<input type='password' id='" . self::$PasswordRepeat . "' name='" . self::$PasswordRepeat . "'/>
 					<br/>
 					<input type='submit' name='" . self::$register . "' value='Register'/>
 				</fieldset>
@@ -199,9 +199,9 @@ class RegisterView {
         return "";
     }
 
-    private function getPassword2() {
-        if (isset($_POST[self::$password2]))
-            return trim($_POST[self::$password2]);
+    private function getPasswordRepeat() {
+        if (isset($_POST[self::$PasswordRepeat]))
+            return trim($_POST[self::$PasswordRepeat]);
         return "";
     }
 

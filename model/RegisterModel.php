@@ -37,9 +37,19 @@ class RegisterModel {
      */
     public function doRegister(UserCredentials $uc) {
 
-        if ($this->usernameExists($uc->getName())) {
+        if ($uc->getName() == "") {
             return false;
-        } else {
+        } else if ($uc->getPassword() == ""){
+            return false;
+        } else if (strlen($uc->getName()) < 3){
+            return false;
+        } else if (strlen($uc->getPassword()) < 6){
+            return false;
+        } else if ($this->usernameExists($uc->getName())){
+            return false;
+        }
+         
+        else {
             $this->registerUser($uc->getName(), $uc->getPassword());
             $this->message = "Registered new user.";
             return true;
