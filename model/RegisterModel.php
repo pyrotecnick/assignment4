@@ -39,19 +39,19 @@ class RegisterModel {
 
         if ($uc->getName() == "") {
             return false;
-        } else if ($uc->getPassword() == ""){
+        } else if ($uc->getPassword() == "") {
             return false;
-        } else if (strlen($uc->getName()) < 3){
+        } else if (strlen($uc->getName()) < 3) {
             return false;
-        } else if (strlen($uc->getPassword()) < 6){
+        } else if (strlen($uc->getPassword()) < 6) {
             return false;
-        } else if (strcmp($uc->getPassword(), $uc->getTempPassword()) !== 0){
+        } else if (strcmp($uc->getPassword(), $uc->getTempPassword()) !== 0) {
             return false;
-        } else if ($this->usernameExists($uc->getName())){
+        } else if ($this->usernameExists($uc->getName())) {
             return false;
-        }
-         
-        else {
+        } else if (preg_match('/[^a-zA-Z0-9]+/', $uc->getName(), $matches)) {
+            return false;
+        } else {
             $this->registerUser($uc->getName(), $uc->getPassword());
             $this->message = "Registered new user.";
             return true;

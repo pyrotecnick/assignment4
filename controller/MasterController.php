@@ -20,8 +20,6 @@ class MasterController {
 
     private $navigationView;
     private $loginModel;
-    
-    
 
     public function __construct(\model\LoginModel $model) {
         $this->navigationView = new \view\NavigationView();
@@ -37,26 +35,38 @@ class MasterController {
 
             $rc->doControl();
 
-            $this->view = $rc->getView();
+            if ($rv->getRegisterSucceeded()) {
+                $uc = $rv->getCredentials();
+                $this->LoginViewSetup(TRUE, $uc->getName());
+            } else {
+                $this->view = $rc->getView();
+            }
         } else {
-            
-            $v = new \view\LoginView($this->loginModel);
-            $c = new \controller\LoginController($this->loginModel, $v);
-            
-            $c->doControl();
-            
-            $this->view = $c->getView();
+            $empty = "";
+            $this->LoginViewSetup(FALSE, $empty);
         }
     }
 
     public function generateOutput() {
         return $this->view;
     }
-    
-    private function checkView(){
-        if($this->navigationView == NULL){
+
+    private function checkView() {
+        if ($this->navigationView == NULL) {
             $this->navigationView = new \view\NavigationView();
         }
+    }
+
+    private function LoginViewSetup($register, $name) {
+        $v = new \view\LoginView($this->loginModel);
+        if ($register == TRUE) {
+            $v->setUserName($name);
+            $v->setMessage();
+        }
+        $c = new \controller\LoginController($this->loginModel, $v);
+        $c->doControl();
+
+        $this->view = $c->getView();
     }
 
 }

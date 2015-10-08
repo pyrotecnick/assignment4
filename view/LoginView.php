@@ -29,6 +29,7 @@ class LoginView {
 	private $loginHasFailed = false;
 	private $loginHasSucceeded = false;
 	private $userDidLogout = false;
+        private $registration = false;
 	/**
 	 * @var \model\LoginModel
 	 */
@@ -148,7 +149,8 @@ class LoginView {
 	 * @return [String HTML
 	 */
 	private function doLoginForm() {
-		$message = "";
+                $message = "";
+                
 		//Correct messages
 		if ($this->userWantsToLogout() && $this->userDidLogout) {
 			$message = "Bye bye!";
@@ -207,6 +209,10 @@ class LoginView {
 			</form>";
 	}
 	private function generateLoginFormHTML($message) {
+            if($this->registration == TRUE){
+                $message = "Registered new user.";
+                $this->registration = FALSE;
+            }
 		return "<form method='post' > 
 				<fieldset>
 					<legend>Login - enter Username and password</legend>
@@ -249,4 +255,10 @@ class LoginView {
 		return isset($_POST[self::$keep]) || 
 			   isset($_COOKIE[self::$CookiePassword]);
 	}
+        public function setUserName($newName) {
+            $_POST[self::$name] = $newName;
+        }
+        public function setMessage(){
+            $this->registration = TRUE;
+        }
 }

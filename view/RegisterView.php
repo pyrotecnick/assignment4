@@ -88,6 +88,10 @@ class RegisterView {
     public function setRegisterSucceeded() {
         $this->registerHasSucceeded = true;
     }
+    
+    public function getRegisterSucceeded(){
+        return $this->registerHasSucceeded;
+    }
 
     /**
      * Create HTTP response
@@ -115,12 +119,13 @@ class RegisterView {
             $message = "Username has too few characters, at least 3 characters. Password has too few characters, at least 6 characters.";
         } else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
             $message = "Username has too few characters, at least 3 characters.";
+        } else if ($this->userWantsToRegister() && $this->dirtyUsername($this->getRequestUserName())) {
+            $_POST[self::$name] = strip_tags($this->getRequestUserName());  //cleans up the requested username
+            $message = "Username contains invalid characters.";
         } else if ($this->userWantsToRegister() && strlen($this->getPassword()) < 6) {
             $message = "Password has too few characters, at least 6 characters.";
         } else if ($this->userWantsToRegister() && strcmp($this->getPassword(), $this->getPasswordRepeat()) !== 0) {
             $message = "Passwords do not match.";
-        } else if ($this->userWantsToRegister() && $this->dirtyUsername($this->getRequestUserName())) {
-            $message = "Username contains invalid characters.";
         } else if ($this->modelMessage != "") {
             $message = $this->modelMessage;
             $this->modelMessage = "";
