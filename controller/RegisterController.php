@@ -26,4 +26,8 @@ class RegisterController {
 				}
 			}
 	}
+        
+        public function getView(){
+            return $this->view;
+        }
 }

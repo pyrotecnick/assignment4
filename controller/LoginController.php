@@ -34,4 +34,8 @@ class LoginController {
 		}
 		$this->model->renew($userClient);
 	}
+        
+        public function getView(){
+            return $this->view;
+        }
 }

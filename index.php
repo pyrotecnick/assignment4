@@ -4,27 +4,22 @@
   * @author Daniel Toll
   */
 require_once("Settings.php");
-require_once("controller/LoginController.php");
-require_once("controller/RegisterController.php");
+require_once("controller/MasterController.php");
 require_once("view/DateTimeView.php");
 require_once("view/LayoutView.php");
-require_once("view/RegisterView.php");
 if (Settings::DISPLAY_ERRORS) {
 	error_reporting(-1);
 	ini_set('display_errors', 'ON');
 }
 //session must be started before LoginModel is created
 session_start(); 
-//Dependency injection
-$m = new \model\LoginModel();
-$v = new \view\LoginView($m);
-$c = new \controller\LoginController($m, $v);
-$rm = new \model\RegisterModel();
-$rv = new \view\RegisterView($rm);
-$rc = new \controller\RegisterController($rm, $rv);
 //Controller must be run first since state is changed
-$rc->doControl();
+$m = new \model\LoginModel();
+$mc = new \controller\MasterController($m);
+$mc->handleInput();
+
 //Generate output
+$view = $mc->generateOutput();
 $dtv = new \view\DateTimeView();
-$lv = new \view\LayoutView();
-$lv->render($m->isLoggedIn($v->getUserClient()), $rv, $dtv);
+$layoutView = new \view\LayoutView();
+$layoutView->render($m->isLoggedIn($view->getUserClient()), $view, $dtv);
