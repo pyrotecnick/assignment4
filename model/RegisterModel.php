@@ -45,6 +45,8 @@ class RegisterModel {
             return false;
         } else if (strlen($uc->getPassword()) < 6){
             return false;
+        } else if (strcmp($uc->getPassword(), $uc->getTempPassword()) !== 0){
+            return false;
         } else if ($this->usernameExists($uc->getName())){
             return false;
         }
