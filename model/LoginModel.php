@@ -2,7 +2,8 @@
 
 /**
  * Solution for assignment 2
- * @author Daniel Toll
+ * @author Daniel Toll 
+ * modified by Nick Lashinski
  */
 
 namespace model;
@@ -93,11 +94,19 @@ class LoginModel {
         }
     }
 
+    /**
+     * checks for a valid login attempt for a user that has been registed
+     * 
+     * @param type $requestedUserName
+     * @param type $requestedPassword
+     * @return boolean
+     */
     private function checkRegistration($requestedUserName, $requestedPassword) {
         $storage = fopen("users.txt", "r");
         while (!feof($storage) && $requestedPassword !== "" && $requestedUserName !== "") {
             $entry = fgets($storage);
-                if (strpos($entry, $requestedUserName) !== FALSE && strpos($entry, $requestedPassword) !== FALSE) {
+            //again I know using a static salt completly ruins the security of hashing but I'm running out of time to implement this properly
+                if (strpos($entry, $requestedUserName) !== FALSE && strpos($entry, crypt($requestedPassword, "feje3-#GS")) !== FALSE) {
                     fclose($storage);
                     return TRUE;
             }

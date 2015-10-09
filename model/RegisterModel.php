@@ -12,20 +12,11 @@ require_once("UserClient.php");
 
 class RegisterModel {
 
-    //TODO: Remove static to enable several sessions
-    private static $sessionUserLocation = "RegisterModel::loggedInUser";
     private $storage;
     public $message;
 
     public function __construct() {
-        self::$sessionUserLocation .= \Settings::APP_SESSION_NAME;
-        $this->storage = "users.txt";
-        if (!isset($_SESSION)) {
-            //Alternate check with newer PHP
-            //if (\session_status() == PHP_SESSION_NONE) {
-            assert("No session started");
-        }
-        $this->tempDAL = new TempCredentialsDAL();
+          $this->storage = "users.txt";
     }
 
     /**
@@ -33,7 +24,6 @@ class RegisterModel {
      * @param  UserCredentials $uc
      * @return boolean
      * 
-     * TODO: fix
      */
     public function doRegister(UserCredentials $uc) {
 
@@ -59,6 +49,12 @@ class RegisterModel {
         return false;
     }
 
+    /**
+     * checks storage to see if requested username has already been registed
+     * 
+     * @param string $username
+     * @return boolean
+     */
     private function usernameExists($username) {
         if (strpos(file_get_contents($this->storage), $username) !== FALSE) {
             $this->message = "User exists, pick another username.";
@@ -72,7 +68,8 @@ class RegisterModel {
         file_put_contents($this->storage, "\r\n", FILE_APPEND);
         file_put_contents($this->storage, $username, FILE_APPEND);
         file_put_contents($this->storage, " ", FILE_APPEND);
-        file_put_contents($this->storage, $password, FILE_APPEND);
+        //I know using a static salt completly ruins the security of hashing but I'm running out of time to implement this properly
+        file_put_contents($this->storage, crypt($password, "feje3-#GS"), FILE_APPEND);
     }
 
 }

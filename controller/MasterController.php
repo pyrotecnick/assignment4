@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * controller to run other controllers and manage both login and registration
  * @author Nick Lashinski
  */
 
@@ -57,6 +58,11 @@ class MasterController {
         }
     }
 
+    /**
+     * 
+     * @param bool $register - if we are going to the login page from a succesfull registation
+     * @param string $name - name of sucessfully registered user
+     */
     private function LoginViewSetup($register, $name) {
         $v = new \view\LoginView($this->loginModel);
         if ($register == TRUE) {

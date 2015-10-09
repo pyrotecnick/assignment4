@@ -89,6 +89,10 @@ class RegisterView {
         $this->registerHasSucceeded = true;
     }
     
+    /**
+     * used in master controller to check if registration attempt succedes
+     * 
+     */
     public function getRegisterSucceeded(){
         return $this->registerHasSucceeded;
     }
@@ -97,7 +101,6 @@ class RegisterView {
      * Create HTTP response
      *
      * Should be called after a register attempt has been determined
-     * @sideeffect Sets cookies!
      * @return String HTML
      * 
      */
@@ -106,15 +109,10 @@ class RegisterView {
     }
 
     /**
-     * @sideeffect Sets cookies!
-     * @return [String HTML
-     * 
-     * TODO: fix
-     * 
+     * @return String HTML
      */
     private function doRegisterForm() {
         $message = "";
-        //Correct messages
         if ($this->userWantsToRegister() && $this->getRequestUserName() == "" && $this->getPassword() == "") {
             $message = "Username has too few characters, at least 3 characters. Password has too few characters, at least 6 characters.";
         } else if ($this->userWantsToRegister() && strlen($this->getRequestUserName()) < 3) {
@@ -147,12 +145,6 @@ class RegisterView {
         } else {
             return FALSE;
         }
-    }
-
-    private function redirect($message) {
-        $_SESSION[self::$sessionSaveLocation] = $message;
-        $actual_link = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-        header("Location: $actual_link");
     }
 
     private function getSessionMessage() {

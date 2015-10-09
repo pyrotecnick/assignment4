@@ -1,6 +1,7 @@
 <?php
 
 /* 
+ * helps manage the links between login and registration
  * @author Nick Lashinski
  */
 
@@ -25,6 +26,9 @@ class NavigationView {
         return FALSE;
     }
     
+    /**
+     * checks if a user is in the registration process
+     */
     public function inRegistration(){
         return isset($_GET[self::$registerURL]) == true;
     }
